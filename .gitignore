@@ -1,4 +1,4 @@
 *.xcode*
 *xc*
-*xproj*
+*pbxproj*
 *.xcworkspace*
