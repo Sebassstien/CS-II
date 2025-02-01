@@ -1,3 +1,4 @@
 *.xcode*
 *xc*
 *xproj*
+*.xcworkspace*
