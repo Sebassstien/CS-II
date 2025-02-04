@@ -1,6 +1,6 @@
-##  Collaborators:
-##  Sebastien LaFontaine
-##  Spencer Ollmann
+# Collaborators:
+# Sebastien LaFontaine
+# Spencer Ollmann
 
 import graphics as g
 
