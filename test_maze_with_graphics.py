@@ -12,14 +12,14 @@ with open("maze.txt", "r") as file:
     file_contents = file.readlines() 
 
     maze_height = len(file_contents) 
-    maze_width = max(len(line.strip()) for line in file_contents)
+    maze_width = max(len(line) for line in file_contents)
 
     win = g.GraphWin("Maze", 400, 400)
     win.setCoords(-1.5, maze_height - 0.5, maze_width - 0.5, -1.5)
 
 # Loop through each row and column in the maze to find walls and draw horizontal lines
 for y in range(maze_height):
-    line = file_contents[y].strip()
+    line = file_contents[y]
     start_point = None 
     for x in range(len(line)): 
         if line[x] == '#':  
@@ -38,7 +38,7 @@ for y in range(maze_height):
 for x in range(maze_width):
     start_point = None 
     for y in range(maze_height):
-        line = file_contents[y].strip()[x] if x < len(file_contents[y].strip()) else ' '
+        line = file_contents[y][x] if x < len(file_contents[y]) else ' '
         if line == '#':
             if start_point is None:
                 start_point = g.Point(x, y)  
