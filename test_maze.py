@@ -84,6 +84,8 @@ with open("maze.txt", "r") as file:
 			mazeSpaces[-1].print()
 		print('')
 	print("")
+	
+#	loop for reading Walls and outputting maze
 	for i in range(len(mazeSpaces)):
 		if None == mazeSpaces[i]:
 			print(' ',end='')
@@ -91,5 +93,6 @@ with open("maze.txt", "r") as file:
 		mazeSpaces[i].print()
 		if i+1 < len(mazeSpaces):
 			if (False == mazeSpaces[i].getRight()) and (mazeSpaces[i+1] != None):
+#				hit maze edge
 				print('')
 	print('')
