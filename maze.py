@@ -23,7 +23,7 @@ with open(filename, "r") as file:
     win = g.GraphWin("Maze", 400, 400)
     win.setCoords(-1.5, maze_height - 0.5, maze_width - 0.5, -1.5)
 
-# Loop through each row and column in the maze to find walls and draw horizontal lines
+# Loop through each column and row in the maze to find horizontal walls and draw horizontal lines
 for y in range(maze_height):
     line = file_contents[y]
     start_point = None 
@@ -40,7 +40,7 @@ for y in range(maze_height):
     if start_point is not None:
         draw_line(start_point, end_point, win)
 
-# Loop through each column in the maze to find vertical walls and draw vertical lines
+# Loop through each row and column in the maze to find vertical walls and draw vertical lines
 for x in range(maze_width):
     start_point = None 
     for y in range(maze_height):
