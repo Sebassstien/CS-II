@@ -1,3 +1,7 @@
+## Collaborators:
+## Spencer Ollemn
+## Sebastien LaFontaine
+
 import random
 import graphics as g 
 import time
@@ -120,14 +124,14 @@ def run_simulation(size, empty_ratio, red_blue_ratio, similar, win, cell_size):
     return grid
 
 if __name__ == "__main__":
-    size = 20
-    win_size = 600
-    cell_size = win_size // size
-    empty_ratio = 0.1
-    red_blue_ratio = 0.5
-    similar = 0.3
+    SIZE = 20
+    WIN_SIZE = 600
+    CELL_SIZE = WIN_SIZE // SIZE
+    EMPTY_RATIO = 0.1
+    RED_BLUE_RATIO = 0.5
+    SIMILAR = 0.3
 
-    win = g.GraphWin("Schelling's Model of Segregation", win_size, win_size, autoflush= False)
-    final_grid = run_simulation(size, empty_ratio, red_blue_ratio, similar, win, cell_size)  
+    win = g.GraphWin("Schelling's Model of Segregation", WIN_SIZE, WIN_SIZE, autoflush= False)
+    final_grid = run_simulation(SIZE, EMPTY_RATIO, RED_BLUE_RATIO, SIMILAR, win, CELL_SIZE)  
     win.getMouse()
     win.close()
