@@ -1,123 +1,123 @@
 import random
 import graphics as g 
+import time
 
-def get_neighbors(x, y, grid):  
-
+def neighbor_similarity(x, y, grid) -> float:
+    """Calculates the fraction of similar neighbors for a given agent at (x, y)."""
+    
     rows = len(grid)
     columns = len(grid[0])
-
-    neighbors = []
+    alike_neighbors = 0
+    unalike_neighbors = 0
     
-    agent_color = grid[x][y]
-    if agent_color == "white":
-        return neighbors
+    agent_color = grid[x][y]  
+    if agent_color == "white":  
+        return 1 
 
-    for dx in range (-1 if (x > 0) else 0, 2 if (x < rows - 1) else 1):  
-        for dy in range(-1 if (y >0) else 0 , 2 if (y < columns - 1) else 1):
-            if (dx != 0 or dy != 0): 
+    for dx in range(-1 if x > 0 else 0, 2 if x < rows - 1 else 1):
+        for dy in range(-1 if y > 0 else 0, 2 if y < columns - 1 else 1):
+            if dx != 0 or dy != 0: 
                 neighbor_x = x + dx
                 neighbor_y = y + dy 
                 if 0 <= neighbor_x < rows and 0 <= neighbor_y < columns: 
                     neighbors_color = grid[neighbor_x][neighbor_y]
                     if neighbors_color == agent_color:
-                        neighbors.append(grid[neighbor_x][neighbor_y]) 
-
-    return neighbors 
-
-def neighbor_similarity(x, y, grid) -> float:
-    rows = len(grid)
-    columns = len(grid[0])
-    alike_neighbors = 0;
-    unalike_neighbors = 0;
-    
-    agent_color = grid[x][y] # grid spaces stored as the color at the grid location
-    if agent_color == "white": # this should be checked by caller
-        return 1
-
-    for dx in range (-1 if (x > 0) else 0, 2 if (x < columns - 1) else 1):  
-        for dy in range(-1 if (y >0) else 0 , 2 if (y < rows - 1) else 1):
-            if (dx != 0 or dy != 0): # exclude self
-                neighbor_x = x + dx
-                neighbor_y = y + dy 
-                if 0 <= neighbor_x < columns and 0 <= neighbor_y < rows: 
-                    neighbors_color = grid[neighbor_x][neighbor_y]
-                    if neighbors_color == agent_color:
                         alike_neighbors += 1
-                    elif "white" != neighbors_color:
+                    elif neighbors_color != agent_color:  
                         unalike_neighbors += 1
 
-    return alike_neighbors/(alike_neighbors+unalike_neighbors)
-    
+    total_neighbors = alike_neighbors + unalike_neighbors
+    return alike_neighbors / total_neighbors if total_neighbors > 0 else 0 
+
 
 def update_simulation(grid, similar, size):
+    """Moves unhappy agents to empty spaces if their neighbor similarity is too low."""
 
     unhappy_agents = []
     empty_cells = []
 
-    for i, (x ,y,cell_type) in enumerate(grid):
-        if cell_type == "white":
-            empty_cells.append(i)
-        elif cell_type in ["red", "blue"]:
-            neighbors = get_neighbors(x, y,grid)
-            if not neighbors:
-                unhappy_agents.append(i)
-                continue
+    for x in range(len(grid)):
+        for y in range(len(grid[x])):
+            if grid[x][y] == "white":
+                empty_cells.append((x, y)) 
+            elif grid[x][y] in ["red", "blue"]:
+                similarity_ratio = neighbor_similarity(x, y, grid)
+                if similarity_ratio < similar: 
+                    unhappy_agents.append((x, y))
+
+    if empty_cells and unhappy_agents:  
+        random.shuffle(unhappy_agents) 
+        random.shuffle(empty_cells)  
+
+        for agent_idx in range(len(unhappy_agents)):
+            if not empty_cells: 
+                break
+            
+            agent_x, agent_y = unhappy_agents[agent_idx]
+            empty_x, empty_y = empty_cells.pop() 
+            
+            grid[empty_x][empty_y] = grid[agent_x][agent_y]  
+            grid[agent_x][agent_y] = "white" 
 
     return grid
 
 def draw_square(win, x, y, cell_size, color):
-
-    x1, y1 = x * cell_size, y * cell_size 
-    x2, y2 = x1 + cell_size, y1 + cell_size 
+    x1, y1 = x * cell_size, y * cell_size
+    x2, y2 = x1 + cell_size, y1 + cell_size
     square = g.Rectangle(g.Point(x1, y1), g.Point(x2, y2))
     square.setFill(color)
     square.setOutline("black")
     square.draw(win)
-    
+
 def draw_grid(size, cell_size, win, grid):
-
-    for (x, y, cell_type) in grid:
-        if cell_type == "white":
-            color = "white"
-        elif cell_type == "red":
-            color = "red"
-        elif cell_type == "blue":
-            color = "blue"
-
-        draw_square(win, x, y, cell_size, color)
+    for x in range(len(grid)):
+        for y in range(len(grid[x])):
+            color = grid[x][y]  
+            draw_square(win, x, y, cell_size, color)
 
 def initialize_grid(size, empty_ratio, red_blue_ratio):
-
     num_empty = int(size * size * empty_ratio)
-    total_agent = (size * size - num_empty)
+    total_agent = size * size - num_empty
     num_red = int(total_agent * red_blue_ratio)
-    num_blue = int(total_agent - num_red) # unused
+    num_blue = int(total_agent - num_red)
     
-    positions = [(x , y) for x in range(size) for y in range(size)]
+    positions = [(x, y) for x in range(size) for y in range(size)]
     random.shuffle(positions)
 
-    grid = []
+    grid = [["white"] * size for i in range(size)] 
 
     for (x, y) in positions[:num_empty]:
-        grid.append((x, y, "white"))
+        grid[x][y] = "white"
 
     for (x, y) in positions[num_empty:num_empty + num_red]:
-        grid.append((x, y, "red"))
+        grid[x][y] = "red"
    
     for (x, y) in positions[num_empty + num_red:]:
-        grid.append((x, y, "blue"))
+        grid[x][y] = "blue"
 
     return grid
 
 def run_simulation(size, empty_ratio, red_blue_ratio, similar, win, cell_size):
-
-    desorganized_grid = initialize_grid(size, empty_ratio, red_blue_ratio)
+    """Runs the Schelling model simulation and updates the visualization."""
     
-    draw_grid(size, cell_size, win, desorganized_grid)
+    grid = initialize_grid(size, empty_ratio, red_blue_ratio)
+    iteration = 0 
 
-    updated_grid = update_simulation(desorganized_grid, similar, size)
-    
-    return updated_grid
+    while True: 
+        draw_grid(size, cell_size, win, grid) 
+        previous_grid = [row[:] for row in grid] 
+        
+        grid = update_simulation(grid, similar, size) 
+        iteration += 1
+        
+        if grid == previous_grid:
+            print(f"Simulation stabilized after {iteration} iterations.")
+            break 
+
+        time.sleep(0.5) 
+        win.update()
+
+    return grid
 
 if __name__ == "__main__":
     size = 20
@@ -127,9 +127,7 @@ if __name__ == "__main__":
     red_blue_ratio = 0.5
     similar = 0.3
 
-    win = g.GraphWin("Schelling's Model of Segregation", win_size, win_size)
-
+    win = g.GraphWin("Schelling's Model of Segregation", win_size, win_size, autoflush= False)
     final_grid = run_simulation(size, empty_ratio, red_blue_ratio, similar, win, cell_size)  
-
     win.getMouse()
     win.close()
