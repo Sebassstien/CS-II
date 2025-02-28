@@ -27,7 +27,7 @@ def neighbor_similarity(x, y, grid) -> float:
                         unalike_neighbors += 1
 
     total_neighbors = alike_neighbors + unalike_neighbors
-    return alike_neighbors / total_neighbors if total_neighbors > 0 else 0 
+    return alike_neighbors / total_neighbors if total_neighbors > 0 else 1 
 
 
 def update_simulation(grid, similar, size):
