@@ -27,14 +27,14 @@ def neighbor_similarity(x, y, grid) -> float:
                     neighbors_color = grid[neighbor_x][neighbor_y]
                     if neighbors_color == agent_color:
                         alike_neighbors += 1
-                    elif neighbors_color != agent_color:  
+                    elif neighbors_color != agent_color and neighbors_color != "white":  
                         unalike_neighbors += 1
 
     total_neighbors = alike_neighbors + unalike_neighbors
     return alike_neighbors / total_neighbors if total_neighbors > 0 else 1 
 
 
-def update_simulation(grid, similar, size):
+def update_simulation(grid, similar):
     """Moves unhappy agents to empty spaces if their neighbor similarity is too low."""
 
     unhappy_agents = []
@@ -74,7 +74,7 @@ def draw_square(win, x, y, cell_size, color):
     square.setOutline("black")
     square.draw(win)
 
-def draw_grid(size, cell_size, win, grid):
+def draw_grid(cell_size, win, grid):
     for x in range(len(grid)):
         for y in range(len(grid[x])):
             color = grid[x][y]  
@@ -85,7 +85,6 @@ def initialize_grid(size, empty_ratio, red_blue_ratio):
     num_empty = int(size * size * empty_ratio)
     total_agent = size * size - num_empty
     num_red = int(total_agent * red_blue_ratio)
-    num_blue = int(total_agent - num_red)
     
     positions = [(x, y) for x in range(size) for y in range(size)]
     random.shuffle(positions)
@@ -110,10 +109,10 @@ def run_simulation(size, empty_ratio, red_blue_ratio, similar, win, cell_size):
     iteration = 0 
 
     while True: 
-        draw_grid(size, cell_size, win, grid) 
+        draw_grid(cell_size, win, grid) 
         previous_grid = [row[:] for row in grid] 
         
-        grid = update_simulation(grid, similar, size) 
+        grid = update_simulation(grid, similar) 
         iteration += 1
         
         if grid == previous_grid:
