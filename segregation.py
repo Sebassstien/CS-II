@@ -66,6 +66,7 @@ def update_simulation(grid, similar, size):
     return grid
 
 def draw_square(win, x, y, cell_size, color):
+    """Draws a square with side length cell_size at x, y in win"""
     x1, y1 = x * cell_size, y * cell_size
     x2, y2 = x1 + cell_size, y1 + cell_size
     square = g.Rectangle(g.Point(x1, y1), g.Point(x2, y2))
@@ -80,6 +81,7 @@ def draw_grid(size, cell_size, win, grid):
             draw_square(win, x, y, cell_size, color)
 
 def initialize_grid(size, empty_ratio, red_blue_ratio):
+    """Creates a square grid with random colors at each coordinate with size*size cells"""
     num_empty = int(size * size * empty_ratio)
     total_agent = size * size - num_empty
     num_red = int(total_agent * red_blue_ratio)
