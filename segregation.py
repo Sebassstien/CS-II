@@ -1,5 +1,5 @@
 ## Collaborators:
-## Spencer Ollemn
+## Spencer Ollmann
 ## Sebastien LaFontaine
 
 import random
