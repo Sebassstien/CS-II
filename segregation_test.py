@@ -19,7 +19,7 @@ def test_neighbor_similarity():
     multicolor_grid=[["blue","red","blue"],["white","red","red"],["white","blue","blue"]]
     assert neighbor_similarity(1,1,multicolor_grid) == approx(2.0/6.0)
 
-def test_grid(grid, size, empty_ratio, red_blue_ratio):
+def _test_grid(grid, size, empty_ratio, red_blue_ratio):
     assert len(grid) == size
     assert len(grid[0]) == size
     empty_cells = 0
@@ -42,7 +42,7 @@ def test_grid(grid, size, empty_ratio, red_blue_ratio):
 def test_initialize_grid():
     size,empty_ratio,red_blue_ratio = 20,0.1,0.7
     grid = initialize_grid(size,empty_ratio,red_blue_ratio)
-    test_grid(grid, size, empty_ratio, red_blue_ratio)
+    _test_grid(grid, size, empty_ratio, red_blue_ratio)
 
 def test_update_simulation():
     size,empty_ratio,red_blue_ratio = 20,0.1,0.7
@@ -50,4 +50,4 @@ def test_update_simulation():
     for i in range(10):
         similarity = 0.3
         update_simulation(grid, similarity)
-        test_grid(grid, size, empty_ratio, red_blue_ratio)
+        _test_grid(grid, size, empty_ratio, red_blue_ratio)
