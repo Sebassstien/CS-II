@@ -6,11 +6,13 @@ FILENAME = "maze.txt"
 
 
 def find_path(maze : list[list[str]], position : tuple[int, int]) -> bool:
-    # if there is another path while backtracking it should stop removing X and take the path
+    """
+    Search through the maze replacing paths with 'X' paths leading to dead ends are replaced with '-'
+    """
     maze[position[0]][position[1]] = 'X'
     if maze[position[0]+1][position[1]] == 'O':
         return True
-    de = True #dead end
+    de = True # assume dead end
     if maze[position[0]+1][position[1]] == ' ':
         if find_path(maze, [position[0]+1,position[1]]):
             de = False
