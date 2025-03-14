@@ -8,26 +8,28 @@ filename = "maze.txt"
 def find_path(maze : list[list[str]], position : tuple[int, int]) -> bool:
     # if there is another path while backtracking it should stop removing X and take the path
     maze[position[0]][position[1]] = 'X'
-    if maze[position[0]][position[1]-1] == 'O':
+    if maze[position[0]+1][position[1]] == 'O':
         return True
+    de = True
     
     if maze[position[0]+1][position[1]] == ' ':
-        if not find_path(maze, [position[0]+1,position[1]]):
-            maze[position[0]+1][position[1]] = ' '
-            return False
+        if find_path(maze, [position[0]+1,position[1]]):
+            de = False
     if maze[position[0]-1][position[1]] == ' ':        
-        if not find_path(maze, [position[0]-1,position[1]]):
-            maze[position[0]-1][position[1]] = ' '
-            return False
+        if find_path(maze, [position[0]-1,position[1]]):
+            de = False
+    if 3 == position[0] and 3 == position[1]:
+        print(maze[position[0]-1][position[1]])
     if maze[position[0]][position[1]+1] == ' ':
-        if not find_path(maze, [position[0],position[1]+1]):
-            maze[position[0]][position[1]+1] = ' '
-            return False
+        if find_path(maze, [position[0],position[1]+1]):
+            de = False
     if maze[position[0]][position[1]-1] == ' ':
-        if not find_path(maze, [position[0],position[1]-1]):
-            maze[position[0]][position[1]-1] = ' '
-            return False
-    return False
+        if find_path(maze, [position[0],position[1]-1]):
+            de = False
+    if de:
+        maze[position[0]][position[1]] = '-'
+    return not de
+
 # Open the maze file and read its contents
 with open(filename, "r") as file:
     file_contents = file.readlines()
@@ -45,5 +47,10 @@ with open(filename, "r") as file:
 for x in range(maze_width):
     if 'I' == maze[0][x]:
         find_path(maze, [1,x])
-for i in maze:
+        break
+for y in range(maze_height):
+    for x in range(maze_width):
+        if '-' == maze[y][x]:
+            maze[y][x] = ' '
+for i in maze: 
     print(i)
