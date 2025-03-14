@@ -12,7 +12,7 @@ def neighbor_similarity(x, y, grid) -> float:
     rows = len(grid)
     columns = len(grid[0])
     alike_neighbors = 0
-    unalike_neighbors = 0
+    total_neighbors = 0
     
     agent_color = grid[x][y]  
     if agent_color == "white":  
@@ -27,10 +27,8 @@ def neighbor_similarity(x, y, grid) -> float:
                     neighbors_color = grid[neighbor_x][neighbor_y]
                     if neighbors_color == agent_color:
                         alike_neighbors += 1
-                    elif neighbors_color != agent_color and neighbors_color != "white":  
-                        unalike_neighbors += 1
+                    total_neighbors += 1
 
-    total_neighbors = alike_neighbors + unalike_neighbors
     return alike_neighbors / total_neighbors if total_neighbors > 0 else 1 
 
 
@@ -85,6 +83,7 @@ def initialize_grid(size, empty_ratio, red_blue_ratio):
     num_empty = int(size * size * empty_ratio)
     total_agent = size * size - num_empty
     num_red = int(total_agent * red_blue_ratio)
+    num_blue = int(total_agent - num_red)
     
     positions = [(x, y) for x in range(size) for y in range(size)]
     random.shuffle(positions)

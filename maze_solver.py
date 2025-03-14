@@ -2,7 +2,7 @@
 # Sebastien LaFontaine
 # Spencer Ollmann
 
-filename = "maze.txt"
+FILENAME = "maze.txt"
 
 
 def find_path(maze : list[list[str]], position : tuple[int, int]) -> bool:
@@ -28,15 +28,9 @@ def find_path(maze : list[list[str]], position : tuple[int, int]) -> bool:
     return not de
 
 # Open the maze file and read its contents
-with open(filename, "r") as file:
-    file_contents = file.readlines()
-    for i in range(len(file_contents)):
-        file_contents[i] = file_contents[i].strip()
-    maze = []
-    for i in range(len(file_contents)):
-        maze.append([])
-        for j in file_contents[i]:
-            maze[i].append(j)
+with open(FILENAME, "r") as file:
+    maze = [list(line.strip()) for line in file.readlines()]
+    
     maze_height = len(maze) 
     maze_width = max(len(line) for line in maze)
 
