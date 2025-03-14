@@ -10,16 +10,13 @@ def find_path(maze : list[list[str]], position : tuple[int, int]) -> bool:
     maze[position[0]][position[1]] = 'X'
     if maze[position[0]+1][position[1]] == 'O':
         return True
-    de = True
-    
+    de = True #dead end
     if maze[position[0]+1][position[1]] == ' ':
         if find_path(maze, [position[0]+1,position[1]]):
             de = False
     if maze[position[0]-1][position[1]] == ' ':        
         if find_path(maze, [position[0]-1,position[1]]):
             de = False
-    if 3 == position[0] and 3 == position[1]:
-        print(maze[position[0]-1][position[1]])
     if maze[position[0]][position[1]+1] == ' ':
         if find_path(maze, [position[0],position[1]+1]):
             de = False
@@ -46,11 +43,14 @@ with open(filename, "r") as file:
 
 for x in range(maze_width):
     if 'I' == maze[0][x]:
-        find_path(maze, [1,x])
+        if not find_path(maze, [1,x]):
+            print("No path found!")
+        else:
+            print("Path found!")
+            for y in range(maze_height):
+                for x in range(maze_width):
+                    if '-' == maze[y][x]:
+                        maze[y][x] = ' '
+            for i in maze: 
+                print(''.join(i))
         break
-for y in range(maze_height):
-    for x in range(maze_width):
-        if '-' == maze[y][x]:
-            maze[y][x] = ' '
-for i in maze: 
-    print(i)
