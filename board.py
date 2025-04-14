@@ -76,7 +76,20 @@ class Board:
                 self.board[row][0] = Piece('white', Position(row, 0))
                 self.board[row][self.cols - 1] = Piece('white', Position(row, self.cols - 1))
 
-    def move_pieces(self): #It should take a position to move from a position to move another
+    def move_pieces(self, intial_position: Vector, selected_position: Vector): #It should take a position to move from a position to move another
+        
+        final_position = selected_position
+        if 0 <= final_position < len(self.board):
+            return self.board[final_position]
+        
+        self.get_piece(intial_position) = ''
+        return self.board[intial_position]
+        #Remove the initial position piece
+    
+    def available_moves(self):
+        pass
+
+    def select_piece(self):
         pass
     
     def is_full(self):
@@ -85,6 +98,9 @@ class Board:
                 if cell == '':
                     return False
         return True
+    
+    def get_piece(self, position: Vector):
+        return self.board[position.y][position.x]
     
 
 def highlight_space(pos: Position):
