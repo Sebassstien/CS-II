@@ -30,11 +30,12 @@ class Position:
     
     def distance_to(self, other):
         """Finds the distance between two Positions."""
-        v = other-self
+        v = other - self
         v.x = abs(v.x)
         v.y = abs(v.y)
         if 0 == v.x or 0 == v.y or v.x == v.y:
-            return max(v.x,v.y)
+            return max(v.x, v.y)
+        return (v.x**2 + v.y**2)**0.5
 
 class Piece:
     color = None
@@ -50,21 +51,21 @@ class Board:
     def __init__(self, rows, cols):
         self.rows = rows
         self.cols = cols
-        self.board = [[' ' for _ in range(cols)] for _ in range(rows)]
+        self.board = [[None for _ in range(cols)] for _ in range(rows)]
 
     def display_board(self, player_1, player_2):
         for row in self.board:
             for col in row:
                 if isinstance(col , Piece):
                     if col.color == 'white':
-                        print(player_1, end='')
+                        print(player_1, end=' ')
                     elif col.color == 'black':
-                        print(player_2, end='')
+                        print(player_2, end=' ')
                     else:
                         print('#')
                 else:
-                    print(' ', end='')
-            print('')
+                    print(' ', end=' ')
+            print()
 
     def initialize_pieces(self):
         for col in range(1, self.cols - 1):
@@ -76,33 +77,73 @@ class Board:
                 self.board[row][0] = Piece('white', Position(row, 0))
                 self.board[row][self.cols - 1] = Piece('white', Position(row, self.cols - 1))
 
-    def move_pieces(self, intial_position: Vector, selected_position: Vector): #It should take a position to move from a position to move another
+    def move_pieces(self, initial_position: Position, selected_position: Position): #It should take a position to move from a position to move another
+        piece = self.get_piece(initial_position)
+        if piece is None:
+            return
         
-        final_position = selected_position
-        if 0 <= final_position < len(self.board):
-            return self.board[final_position]
-        
-        self.get_piece(intial_position) = ''
-        return self.board[intial_position]
-        #Remove the initial position piece
+        self.board[initial_position.y][initial_position.x] = None
+        self.board[selected_position.y][selected_position.x] = piece
+        piece.position =  selected_position
+  
     
-    def available_moves(self):
-        pass
+    def available_moves(self, position: Position):
+        piece = self.get_piece(position)
+        if piece is None:
+            return []
+        
+        moves = []
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0),
+                    (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
-    def select_piece(self):
-        pass
-    
-    def is_full(self):
-        for row in self.board:
-            for cell in row:
-                if cell == '':
-                    return False
-        return True
-    
-    def get_piece(self, position: Vector):
+        for dx, dy in directions:
+            check_pos = Position(position.x + dx, position.y + dy)
+            distance = self.num_pieces_in_line(position, check_pos)
+            if distance == 0:
+                continue
+
+            new_x = position.x + dx * distance
+            new_y = position.y + dy * distance
+            new_pos = Position(new_x, new_y)
+
+            if not (0 <= new_x < self.cols and 0 <= new_y < self.rows):
+                continue
+
+            target_piece = self.get_piece(new_pos)
+            if target_piece is None or target_piece.color != piece.color:
+                moves.append(new_pos)
+
+        return moves
+        
+    def get_piece(self, position: Position):
         return self.board[position.y][position.x]
-    
 
+    def num_pieces_in_line(self, position_1: Position, position_2: Position):
+        dx = position_2.x - position_1.x
+        dy = position_2.y - position_1.y
+
+        if dx == 0 and dy == 0:
+            return 0
+            
+        direction_x = 0 if dx == 0 else 1 if dx > 0 else -1
+        direction_y = 0 if dy == 0 else 1 if dy > 0 else -1
+
+        count = 0
+        current_x = position_1.x + direction_x
+        current_y = position_1.y + direction_y
+
+        while 0 <= current_x < self.cols and 0 <= current_y < self.rows:
+            if self.get_piece(Position(current_x, current_y)) is not None:
+                count += 1
+            if current_x == position_2.x and current_y == position_2.y:
+                break
+            current_x += direction_x
+            current_y += direction_y
+        return count
+    
+    def are_connected(self, color: str):
+        pass #DFS and check if Pieces are equal
+    
 def highlight_space(pos: Position):
     pass #graphics code here
 def unhighlight_space(pos: Position):
@@ -112,7 +153,7 @@ class Game:
     board = Board(8,8)
     turn = "black"
     def __init__(self):
-        pass
+        self.select_pieces = None
     def is_movable(self,pos: Position) -> bool:
         if not isinstance(self.board.board[pos.y][pos.x], Piece):
             return False
@@ -120,26 +161,34 @@ class Game:
             return False
         return True
     
-    def valid_moves(self,pos1: Position):
-        if not self.is_movable(pos1):
+    def valid_moves(self,position_1: Position):
+        if not self.is_movable(position_1):
             return
-        #return lsit of all spaces piece can move to
         return []
     
-    def num_pieces_in_line(self, pos1:Position, pos2:Position):
-        pass #determine direction of line then iterate through line counting pieces
-
-    def select_piece(self, pos1: Position):
-        if not self.is_movable(pos1):
+    def move_piece(self, position_1: Position, position_2: Position):
+        if not self.is_movable(position_1):
             return
-        for i in self.valid_moves(pos1):
-            highlight_space(i)
+        if position_2 in self.valid_moves(position_1):
+            self.board.move_pieces(position_1, position_2)
+            self.turn = "white" if self.turn == "black" else "black"
+            self.selected_piece = None
+            for move in self.valid_moves(position_2):
+                unhighlight_space(move)
+        else:
+            print("Invalid Move")
 
-    def move_piece(self,pos1: Position, pos2: Position):
-        if not self.is_movable(pos1):
+
+    def select_pieces(self, position: Position):
+        if self.selected_piece is not None:
+            for move in self.valid_moves(self.selected_piece):
+                unhighlight_space(move)
+        if not self.is_movable(position):
+            self.selected_piece = None
             return
-        if pos2.distance_to(pos1) == self.num_pieces_in_line(pos1,pos2):
-            if isinstance(self.board.get_piece(pos2), Piece):
-                return
-            self.board.move_pieces(pos1,pos2)
-        
+        self.selected_piece = position
+        for move in self.valid_moves(position):
+            highlight_space(move)
+
+    def check_winner(self):
+        pass
