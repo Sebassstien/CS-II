@@ -17,9 +17,9 @@ def test_position():
 
 
 def test_piece():
-    p = Piece()
-    assert p.color == None
-    assert p.position == None
+    p = Piece('','')
+    assert p.color == ''
+    assert p.position == ''
 
 def test_board_init():
     b = Board(BOARD_HEIGHT,BOARD_WIDTH)
@@ -27,7 +27,7 @@ def test_board_init():
     for i in b.board:
         assert len(i) == BOARD_WIDTH
     
-def test_board_initialize_pieces():
+def test_initialize_pieces():
     b = Board(BOARD_HEIGHT,BOARD_WIDTH)
     b.initialize_pieces()
     for i in range(1, len(b.board[0])-1):
@@ -35,3 +35,22 @@ def test_board_initialize_pieces():
         assert isinstance(p, Piece)
         if isinstance(p, Piece):
             assert p.color == "white"
+def test_get_piece():
+    b = Board(BOARD_HEIGHT,BOARD_WIDTH)
+    b.board[0][0] = Piece('white',Position(0,0))
+    b.board[1][1] = Piece('black',Position(1,1))
+    b.board[3][3] = Piece('black', Position(3,3))
+    b.board[0][1] = Piece('white', Position(0,1))
+    assert isinstance(b.get_piece(Position(0,0)),Piece)
+    assert not isinstance(b.get_piece(Position(0,1)), Piece)
+    assert isinstance(b.get_piece(Position(1,0)), Piece)
+
+def test_num_pieces_in_line():
+    b = Board(BOARD_HEIGHT,BOARD_WIDTH)
+    b.board[0][0] = Piece('white',Position(0,0))
+    b.board[1][1] = Piece('black',Position(1,1))
+    b.board[3][3] = Piece('black', Position(3,3))
+    b.board[0][1] = Piece('white', Position(0,1))
+    assert b.num_pieces_in_line(Position(1,1), Position(0,0)) == 3
+    assert b.num_pieces_in_line(Position(1,1), Position(0,1)) == 2
+    assert b.num_pieces_in_line(Position(3,3), Position(0,3)) == 1
