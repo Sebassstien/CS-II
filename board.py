@@ -1,10 +1,12 @@
 from graphics import *
 
 class Position:
-    def __init__(self, x: int = 0, y: int = 0):
+    def __init__(self, x : int = 0, y : int = 0):
+        """Initializes a new Position with given x and y."""
         self.x = x
         self.y = y
 
+    
     def __repr__(self):
         return f"Position(x={self.x}, y={self.y})"
 
@@ -24,8 +26,13 @@ class Position:
         return Position(self.x * scalar, self.y * scalar)
 
     def distance_to(self, other):
-        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
-
+        """Finds the distance between two Positions."""
+        v = other - self
+        v.x = abs(v.x)
+        v.y = abs(v.y)
+        if 0 == v.x or 0 == v.y or v.x == v.y:
+            return max(v.x, v.y)
+        return None #(v.x**2 + v.y**2)**0.5
 
 class Piece:
     def __init__(self, color: str, position: Position):
