@@ -116,33 +116,33 @@ class Board:
         return None
 
     def num_pieces_in_line(self, position_1: Position, position_2: Position):
-        dy = (position_2.x - position_1.x != 0)
-        dx = (position_2.y - position_1.y != 0)
-        if dy == 0 and dx == 0:
+        dx = (position_2.x - position_1.x != 0)
+        dy = (position_2.y - position_1.y != 0)
+        if dx == 0 and dy == 0:
             return 0
         count = 0
-        y, x = position_1.x, position_1.y
-        if dy and not dx:
-            y = 0
-            while y < self.cols:
-                if self.get_piece(Position(x, y)) is not None:
-                    count += 1
-                y += dy
+        x, y = position_1.x, position_1.y
         if dx and not dy:
             x = 0
-            while x < self.rows:
+            while x < self.cols:
                 if self.get_piece(Position(x, y)) is not None:
                     count += 1
                 x += dx
-        if dx and dy:
-            while x > 0 and y > 0:
-                x -= 1
-                y -= 1
-            while 0 <= y < self.cols and 0 <= x < self.rows:
+        if dy and not dx:
+            y = 0
+            while y < self.rows:
                 if self.get_piece(Position(x, y)) is not None:
                     count += 1
                 y += dy
+        if dy and dx:
+            while y > 0 and x > 0:
+                y -= 1
+                x -= 1
+            while 0 <= x < self.cols and 0 <= y < self.rows:
+                if self.get_piece(Position(x, y)) is not None:
+                    count += 1
                 x += dx
+                y += dy
         return count
 
     def are_connected(self, color: str) -> bool:
