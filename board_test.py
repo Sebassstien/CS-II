@@ -110,10 +110,7 @@ def test_available_moves():
     #     print(i)
     assert b.available_moves(Position(0,0)) == [Position(0,2),Position(3,3)]
     assert b.available_moves(Position(0,1)) == []
-    assert b.available_moves(Position(1,0)) == [Position(1,1),Position(3,0)]
-
-def test_are_connected():
-    pass
+    assert b.available_moves(Position(1,0)) == [Position(1,1),Position(3,0)]  
 
 def test_is_movable():
     pass
@@ -122,4 +119,31 @@ def test_move_piece():
     pass
 
 def test_check_winner():
-    pass
+    g = Game(BOARD_HEIGHT, BOARD_WIDTH)
+    g.board = Board(BOARD_HEIGHT,BOARD_WIDTH) 
+    b = g.board
+    b.board[0][0] = Piece('white',Position(1,1))
+    b.board[1][1] = Piece('black',Position(0,0))
+    b.board[3][3] = Piece('black', Position(3,3))
+    b.board[0][1] = Piece('white', Position(0,1))
+    assert g.check_winner() == "White wins"
+    assert g.check_winner() != "Black wins"
+    assert g.check_winner() != "Tie"
+
+    g.board = Board(BOARD_HEIGHT,BOARD_WIDTH) 
+    b = g.board
+    b.board[0][0] = Piece('black',Position(1,1))
+    b.board[1][1] = Piece('white',Position(0,0))
+    b.board[3][3] = Piece('white', Position(3,3))
+    b.board[0][1] = Piece('black', Position(0,1))
+    assert g.check_winner() == "Black wins"
+    assert g.check_winner() != "White wins"
+    assert g.check_winner() != "Tie"
+
+    g.board = Board(BOARD_HEIGHT,BOARD_WIDTH) 
+    b = g.board
+    b.board[0][0] = Piece('white',Position(1,1))
+    b.board[1][1] = Piece('black',Position(0,0))
+    assert g.check_winner() == "Tie"
+    assert g.check_winner() != "White wins"
+    assert g.check_winner() != "Black wins"
