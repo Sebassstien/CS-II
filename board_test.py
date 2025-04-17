@@ -88,6 +88,11 @@ def test_available_moves():
     b.board[1][1] = Piece('black',Position(1,1))
     b.board[3][3] = Piece('black', Position(3,3))
     b.board[0][1] = Piece('white', Position(0,1))
+    # for i in b.board:
+    #     print(i)
+    assert b.available_moves(Position(0,0)) == [Position(0,2),Position(3,3)]
+    assert b.available_moves(Position(0,1)) == []
+    assert b.available_moves(Position(1,0)) == [Position(1,1),Position(3,0)]
 
 def test_are_connected():
     pass
