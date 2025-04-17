@@ -71,15 +71,29 @@ class Board:
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0),
                       (1, 1), (1, -1), (-1, 1), (-1, -1)]
         for dx, dy in directions:
-            check_pos = Position(position.x + dx, position.y + dy)
-            distance = self.num_pieces_in_line(position, check_pos)
+            check_position = Position(position.x + dx, position.y + dy)
+            distance = self.num_pieces_in_line(position, check_position)
             if distance == 0:
                 continue
+                 
             new_x = position.x + dx * distance
             new_y = position.y + dy * distance
             new_pos = Position(new_x, new_y)
             if not (0 <= new_x < self.cols and 0 <= new_y < self.rows):
                 continue
+
+            blocked = False
+            for step in range(1, distance):
+                intermediate_x = position.x + dx * step
+                intermediate_y = position.y + dy * step
+                intermediate_pos = Position(intermediate_x, intermediate_y)
+                intermediate_piece = self.get_piece(intermediate_pos)
+                if intermediate_piece and intermediate_piece.color != piece.color:
+                    blocked = True
+                    break
+            if blocked:
+                continue
+            
             target_piece = self.get_piece(new_pos)
             if target_piece is None or target_piece.color != piece.color:
                 moves.append(new_pos)
@@ -104,7 +118,7 @@ class Board:
                 count += 1
             x += direction_x
             y += direction_y
-        return count
+        return count + 1
 
     def are_connected(self, color: str) -> bool:
         color = color.lower()
@@ -118,8 +132,8 @@ class Board:
         if not positions:
             return True
 
-        def dfs(pos):
-            stack = [pos]
+        def dfs(position):
+            stack = [position]
             while stack:
                 current = stack.pop()
                 if (current.x, current.y) in visited:

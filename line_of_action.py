@@ -62,20 +62,20 @@ def start_game_graphics():
 
     while True:
         click_point = win.getMouse()  
-        click_pos = get_click_position(click_point)
+        click_position = get_click_position(click_point)
 
         # If no piece is selected, try to select a piece
         if selected_piece_pos is None:
-            if game.is_movable(click_pos):
-                selected_piece_pos = click_pos
-                available_moves = board.available_moves(click_pos)
+            if game.is_movable(click_position):
+                selected_piece_pos = click_position
+                available_moves = board.available_moves(click_position)
                 highlight_moves(available_moves)
             else:
                 print("Invalid piece. Select a piece of your color.")
         else:
             # Move the piece
-            if click_pos in board.available_moves(selected_piece_pos):
-                game.move_piece(selected_piece_pos, click_pos)
+            if click_position in board.available_moves(selected_piece_pos):
+                game.move_piece(selected_piece_pos, click_position)
                 selected_piece_pos = None  
                 draw_board()  
             else:
