@@ -25,7 +25,7 @@ def draw_board():
         for col in range(board.cols):
             # Draw the square
             rect = Rectangle(Point(col * SQUARE_SIZE, row * SQUARE_SIZE), Point((col + 1) * SQUARE_SIZE, (row + 1) * SQUARE_SIZE))
-            rect.setFill(color_rgb(255, 204, 229) if (row + col) % 2 == 0 else color_rgb(153, 204, 255))
+            rect.setFill(color_rgb(20, 122, 85) if (row + col) % 2 == 0 else "lightgray")
             rect.draw(win)
 
             # Draw the piece 
@@ -50,7 +50,7 @@ def highlight_moves(available_moves):
         p1 = Point(move.x * SQUARE_SIZE, move.y * SQUARE_SIZE)
         p2 = Point((move.x + 1) * SQUARE_SIZE, (move.y + 1) * SQUARE_SIZE)
         square = Rectangle(p1, p2)
-        square.setOutline("green")
+        square.setOutline("red")
         square.setWidth(3)
         square.draw(win)
         highlighted_squares.append(square)
