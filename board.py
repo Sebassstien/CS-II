@@ -214,6 +214,7 @@ class Game:
             self.turn = "white" if self.turn == "black" else "black"
             self.selected_piece = None
             print(f"Moved piece to {position_2}")
+            return True
         else:
             print("Invalid Move")
 

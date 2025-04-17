@@ -1,3 +1,7 @@
+# Collaborators:
+# Sebastien LaFontaine
+# Spencer Ollmann
+
 from graphics import *
 from board import Game, Position, Board, Piece
 
