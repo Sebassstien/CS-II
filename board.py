@@ -1,10 +1,12 @@
 from graphics import *
 
 class Position:
-    def __init__(self, x: int = 0, y: int = 0):
+    def __init__(self, x : int = 0, y : int = 0):
+        """Initializes a new Position with given x and y."""
         self.x = x
         self.y = y
 
+    
     def __repr__(self):
         return f"Position(x={self.x}, y={self.y})"
 
@@ -24,8 +26,13 @@ class Position:
         return Position(self.x * scalar, self.y * scalar)
 
     def distance_to(self, other):
-        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
-
+        """Finds the distance between two Positions."""
+        v = other - self
+        v.x = abs(v.x)
+        v.y = abs(v.y)
+        if 0 == v.x or 0 == v.y or v.x == v.y:
+            return max(v.x, v.y)
+        return None #(v.x**2 + v.y**2)**0.5
 
 class Piece:
     def __init__(self, color: str, position: Position):
@@ -105,20 +112,21 @@ class Board:
         return None
 
     def num_pieces_in_line(self, position_1: Position, position_2: Position):
-        dx = position_2.x - position_1.x
-        dy = position_2.y - position_1.y
+        dx = (position_2.x - position_1.x != 0)
+        dy = (position_2.y - position_1.y != 0)
         if dx == 0 and dy == 0:
             return 0
-        direction_x = 0 if dx == 0 else 1 if dx > 0 else -1
-        direction_y = 0 if dy == 0 else 1 if dy > 0 else -1
         count = 0
-        x, y = position_1.x + direction_x, position_1.y + direction_y
+        x, y = position_1.x, position_1.y
+        while 0 < x < self.cols and 0 < y < self.rows:
+            x -= dx
+            y -= dy
         while 0 <= x < self.cols and 0 <= y < self.rows:
-            if self.get_piece(Position(x, y)) is not None:
+            if self.get_piece(Position(y, x)) is not None:
                 count += 1
-            x += direction_x
-            y += direction_y
-        return count + 1
+            x += dx
+            y += dy
+        return count
 
     def are_connected(self, color: str) -> bool:
         color = color.lower()
