@@ -1,6 +1,7 @@
 from graphics import *
 
 class Position:
+    """Represents a position on the board."""
     def __init__(self, x : int = 0, y : int = 0):
         """Initializes a new Position with given x and y."""
         self.x = x
@@ -34,6 +35,7 @@ class Position:
         return None #(v.x**2 + v.y**2)**0.5
 
 class Piece:
+    """Represents a game piece on the board."""
     def __init__(self, color: str, position: Position):
         self.color = color.lower()
         self.position = position
@@ -46,6 +48,7 @@ class Piece:
 
 
 class Board:
+    """Represents the game board."""
     def __init__(self, rows: int, cols: int):
         self.rows = rows
         self.cols = cols
@@ -60,9 +63,11 @@ class Board:
             self.board[row][self.cols - 1] = Piece('white', Position(self.cols - 1, row))
 
     def in_bounds(self, position: Position):
+        """Checks for the board limits."""
         return (position.x > self.rows or position.x < 0 or position.y > self.cols or position.y < 0)
 
     def move_pieces(self, initial_position: Position, selected_position: Position):
+        """Moves a piece from initial position to a selected position."""
         piece = self.get_piece(initial_position)
         if piece is None:
             return
@@ -73,6 +78,7 @@ class Board:
         piece.position = selected_position
 
     def available_moves(self, position: Position):
+        """Calculates the available moves for a piece at given position."""
         piece = self.get_piece(position)
         if piece is None:
             return []
@@ -111,11 +117,13 @@ class Board:
         return moves
 
     def get_piece(self, position: Position):
+        """Retrieves the piece at a given position on the board."""
         if 0 <= position.y < self.rows and 0 <= position.x < self.cols:
             return self.board[position.y][position.x]
         return None
 
     def num_pieces_in_line(self, position_1: Position, position_2: Position):
+        """Count the number of pieces on a line following the direction."""
         dx = (position_2.x - position_1.x != 0)
         dy = (position_2.y - position_1.y != 0)
         if dx == 0 and dy == 0:
@@ -152,6 +160,7 @@ class Board:
         return count
 
     def are_connected(self, color: str) -> bool:
+        """Check if all the pieces of the color are connected."""
         color = color.lower()
         visited = set()
         positions = [
@@ -183,6 +192,7 @@ class Board:
         return len(visited) == len(positions)
 
 class Game:
+    """Keeps of turns and the board movements."""
     def __init__(self, rows: int, cols: int):
         self.board = Board(rows, cols)
         self.turn = "black"
@@ -190,10 +200,12 @@ class Game:
         self.board.initialize_pieces()
 
     def is_movable(self, pos: Position) -> bool:
+        """Check if the piece is movable."""
         piece = self.board.get_piece(pos)
         return isinstance(piece, Piece) and piece.color == self.turn
 
     def move_piece(self, position_1: Position, position_2: Position):
+        """Move the piece to the desired position."""
         if not self.is_movable(position_1):
             print("Invalid selection. Choose a piece of your color.")
             return
@@ -206,6 +218,7 @@ class Game:
             print("Invalid Move")
 
     def check_winner(self):
+        """Checks the winner after every round."""
         black_connected = self.board.are_connected("black")
         white_connected = self.board.are_connected("white")
         if black_connected and white_connected:
