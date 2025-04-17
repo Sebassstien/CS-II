@@ -108,15 +108,26 @@ def test_available_moves():
     b.board[0][1] = Piece('white', Position(0,1))
     # for i in b.board:
     #     print(i)
-    assert b.available_moves(Position(0,0)) == [Position(0,2),Position(3,3)]
+    assert b.available_moves(Position(0,0)) == [Position(0,1),Position(2,0)]
     assert b.available_moves(Position(0,1)) == []
-    assert b.available_moves(Position(1,0)) == [Position(1,1),Position(3,0)]  
+    assert b.available_moves(Position(1,0)) == [Position(3,0),Position(2,1),Position(0,1)]
 
 def test_is_movable():
-    pass
+    g = Game(BOARD_HEIGHT,BOARD_WIDTH)
+    assert not g.is_movable(Position(4,4))
+    assert g.is_movable(Position(1,0))
+    assert not g.is_movable(Position(0,1))
 
 def test_move_piece():
-    pass
+    g = Game(BOARD_HEIGHT,BOARD_WIDTH)
+    assert g.move_piece(Position(0,0),Position(0,0)) == None
+    assert g.move_piece(Position(0,0),Position(1,1)) == None
+    assert g.move_piece(Position(1,0),Position(0,0)) == None
+    assert g.move_piece(Position(1,0),Position(1,2)) == True
+    assert g.move_piece(Position(2,0),Position(2,-2)) == None
+    assert g.move_piece(Position(0,1),Position(2,1)) == True
+    g.board.board[3][6] = Piece("white",Position(6,3))
+    assert g.move_piece(Position(6,0),Position(6,3)) == True
 
 def test_check_winner():
     g = Game(BOARD_HEIGHT, BOARD_WIDTH)
