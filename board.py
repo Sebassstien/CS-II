@@ -122,10 +122,14 @@ class Board:
             return 0
         count = 0
         y, x = position_1.x, position_1.y
-        while 0 < y < self.cols and dy:
-            y -= dy
-        while 0 < x < self.rows and dx:
-            x -= dx
+        if dy and not dx:
+            y = 0
+        if dx and not dy:
+            x = 0
+        if dx and dy:
+            while x > 0 and y > 0:
+                x -= 1
+                y -= 1
         while 0 <= y < self.cols and 0 <= x < self.rows:
             if self.get_piece(Position(x, y)) is not None:
                 count += 1
