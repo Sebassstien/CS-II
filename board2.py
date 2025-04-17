@@ -171,3 +171,39 @@ class Game:
         elif white_connected:
             return "White wins"
         return None
+    
+
+
+    def available_moves(self, position: Position):
+        piece = self.get_piece(position)
+        if piece is None:
+            return []
+        moves = []
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0),
+                      (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        for dx, dy in directions:
+            check_pos = Position(position.x + dx, position.y + dy)
+            distance = 0
+            # Count the number of pieces in the line and check for same-color jumps
+            temp_x, temp_y = position.x + dx, position.y + dy
+            valid_jump = True
+            while 0 <= temp_x < self.cols and 0 <= temp_y < self.rows:
+                jumped_over_piece = self.get_piece(Position(temp_x, temp_y))
+                if jumped_over_piece:
+                    distance += 1
+                    if jumped_over_piece.color == piece.color:
+                        valid_jump = False
+                        break
+                temp_x += dx
+                temp_y += dy
+
+            if distance > 0 and valid_jump:
+                new_x = position.x + dx * distance
+                new_y = position.y + dy * distance
+                new_pos = Position(new_x, new_y)
+                if not (0 <= new_x < self.cols and 0 <= new_y < self.rows):
+                    continue
+                target_piece = self.get_piece(new_pos)
+                if target_piece is None or target_piece.color != piece.color:
+                    moves.append(new_pos)
+        return moves
