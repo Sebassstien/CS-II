@@ -78,6 +78,8 @@ class Board:
                       (1, 1), (1, -1), (-1, 1), (-1, -1)]
         for dx, dy in directions:
             check_position = Position(position.x + dx, position.y + dy)
+            if check_position.x > 7 or check_position.x < 0 or check_position.y > 7 or check_position.y < 0:
+                continue
             distance = self.num_pieces_in_line(position, check_position)
             if distance == 0:
                 continue
