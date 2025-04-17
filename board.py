@@ -59,6 +59,9 @@ class Board:
             self.board[row][0] = Piece('white', Position(0, row))
             self.board[row][self.cols - 1] = Piece('white', Position(self.cols - 1, row))
 
+    def in_bounds(self, position: Position):
+        return (position.x > self.rows or position.x < 0 or position.y > self.cols or position.y < 0)
+
     def move_pieces(self, initial_position: Position, selected_position: Position):
         piece = self.get_piece(initial_position)
         if piece is None:
@@ -78,7 +81,7 @@ class Board:
                       (1, 1), (1, -1), (-1, 1), (-1, -1)]
         for dx, dy in directions:
             check_position = Position(position.x + dx, position.y + dy)
-            if check_position.x > 7 or check_position.x < 0 or check_position.y > 7 or check_position.y < 0:
+            if self.in_bounds(check_position):
                 continue
             distance = self.num_pieces_in_line(position, check_position)
             if distance == 0:
@@ -113,20 +116,21 @@ class Board:
         return None
 
     def num_pieces_in_line(self, position_1: Position, position_2: Position):
-        dx = (position_2.x - position_1.x != 0)
-        dy = (position_2.y - position_1.y != 0)
-        if dx == 0 and dy == 0:
+        dy = (position_2.x - position_1.x != 0)
+        dx = (position_2.y - position_1.y != 0)
+        if dy == 0 and dx == 0:
             return 0
         count = 0
-        x, y = position_1.x, position_1.y
-        while 0 < x < self.cols and 0 < y < self.rows:
-            x -= dx
+        y, x = position_1.x, position_1.y
+        while 0 < y < self.cols and dy:
             y -= dy
-        while 0 <= x < self.cols and 0 <= y < self.rows:
-            if self.get_piece(Position(y, x)) is not None:
+        while 0 < x < self.rows and dx:
+            x -= dx
+        while 0 <= y < self.cols and 0 <= x < self.rows:
+            if self.get_piece(Position(x, y)) is not None:
                 count += 1
-            x += dx
             y += dy
+            x += dx
         return count
 
     def are_connected(self, color: str) -> bool:
