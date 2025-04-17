@@ -6,7 +6,6 @@ class Position:
         self.x = x
         self.y = y
 
-    
     def __repr__(self):
         return f"Position(x={self.x}, y={self.y})"
 
