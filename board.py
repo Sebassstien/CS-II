@@ -135,14 +135,20 @@ class Board:
                     count += 1
                 y += dy
         if dy and dx:
-            while y > 0 and x > 0:
-                y -= 1
-                x -= 1
+            dir_x = 1
+            dir_y = 1
+            if position_2.x - position_1.x < 0:
+                dir_x = -1
+            if position_2.y - position_1.y < 0:
+                dir_y = -1
+            while 0 < x < self.cols-1 and 0 < y < self.rows-1:
+                x -= dir_x
+                y -= dir_y
             while 0 <= x < self.cols and 0 <= y < self.rows:
                 if self.get_piece(Position(x, y)) is not None:
                     count += 1
-                x += dx
-                y += dy
+                x += dir_x
+                y += dir_y
         return count
 
     def are_connected(self, color: str) -> bool:

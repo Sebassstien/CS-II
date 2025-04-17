@@ -81,6 +81,13 @@ def test_num_pieces_in_line():
     b.move_pieces(Position(7,2),Position(5,2))
     assert b.num_pieces_in_line(Position(2,7), Position(0,5)) == 2
     assert b.num_pieces_in_line(Position(7,2), Position(5,0)) == 1
+    assert b.num_pieces_in_line(Position(7,2), Position(5,0)) == 1
+    b = Board(BOARD_HEIGHT,BOARD_WIDTH)
+    b.initialize_pieces()
+    b.move_pieces(Position(7,2),Position(4,2))
+    b.board[0][4] = None
+    assert b.num_pieces_in_line(Position(5,0), Position(4,1)) == 2
+
 
 def test_move_pieces():
     b = Board(BOARD_HEIGHT,BOARD_WIDTH)
